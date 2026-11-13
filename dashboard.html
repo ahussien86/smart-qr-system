@@ -92,7 +92,52 @@
     <h2 id="restaurantName">جاري تحميل المطعم...</h2>
     <p>إجمالي المنتجات: <strong id="productCount">0</strong></p>
   </div>
+<div class="stats">
+  <h2>إضافة منتج جديد</h2>
 
+  <form id="addProductForm">
+
+    <input
+      type="text"
+      id="productName"
+      placeholder="اسم المنتج"
+      required
+    >
+
+    <input
+      type="text"
+      id="productCategory"
+      placeholder="القسم (Burger / Drinks)"
+      required
+    >
+
+    <input
+      type="text"
+      id="productDescription"
+      placeholder="وصف المنتج"
+      required
+    >
+
+    <input
+      type="number"
+      id="productPrice"
+      placeholder="السعر بالجنيه"
+      min="0"
+      required
+    >
+
+    <input
+      type="text"
+      id="productImage"
+      placeholder="رابط الصورة أو إيموجي 🍔"
+      required
+    >
+
+    <button type="submit">إضافة المنتج</button>
+
+  </form>
+</div>
+  
   <div id="message">جاري تحميل البيانات...</div>
 
   <div class="products" id="products"></div>

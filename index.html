@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart QR | تسجيل الدخول</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #101114;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background: #1b1c22;
+      border: 1px solid #34353e;
+      border-radius: 18px;
+      padding: 35px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #f5a623;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: #aaa;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      background: #111216;
+      border: 1px solid #383941;
+      border-radius: 9px;
+      color: white;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #f5a623;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 9px;
+      background: #f5a623;
+      color: #171717;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #message {
+      margin-top: 18px;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+    <h1>SMART QR</h1>
+    <p>لوحة تحكم المطاعم الذكية</p>
+
+    <form id="loginForm">
+      <input
+        type="email"
+        id="email"
+        placeholder="البريد الإلكتروني"
+        required
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="كلمة المرور"
+        required
+      >
+
+      <button type="submit">تسجيل الدخول</button>
+    </form>
+
+    <div id="message"></div>
+  </div>
+
+  <script type="module">
+
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from
+      "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAH_JFFNU9qDKihPdOyNtLZ_ecMwWSMOIM",
+      authDomain: "smart-qr-system-5a587.firebaseapp.com",
+      projectId: "smart-qr-system-5a587",
+      storageBucket: "smart-qr-system-5a587.firebasestorage.app",
+      messagingSenderId: "879059590632",
+      appId: "1:879059590632:web:38ce57f677cb6fc1b5185d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const form = document.getElementById("loginForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      message.textContent = "جاري تسجيل الدخول...";
+
+      try {
+        const result = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        message.textContent =
+          "تم تسجيل الدخول بنجاح! UID: " + result.user.uid;
+
+      } catch (error) {
+        message.textContent = "تعذر تسجيل الدخول. راجع البريد وكلمة المرور.";
+        console.error(error);
+      }
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        message.textContent =
+          "أنت مسجل الدخول بالفعل. UID: " + user.uid;
+      }
+    });
+
+  </script>
+
+</body>
+</html>

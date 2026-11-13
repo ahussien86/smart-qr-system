@@ -272,6 +272,42 @@ console.log("Products read successful:", productsSnap.size);
       window.location.href = "index.html";
     });
 
+    document.getElementById("addProductForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const user = auth.currentUser;
+
+  if (!user) {
+    alert("سجل الدخول أولاً");
+    return;
+  }
+
+  const product = {
+    name: document.getElementById("productName").value.trim(),
+    category: document.getElementById("productCategory").value.trim(),
+    description: document.getElementById("productDescription").value.trim(),
+    price: Number(document.getElementById("productPrice").value),
+    image: document.getElementById("productImage").value.trim(),
+    available: true
+  };
+
+  try {
+    await addDoc(
+      collection(db, "restaurants", user.uid, "products"),
+      product
+    );
+
+    alert("تمت إضافة المنتج بنجاح!");
+
+    document.getElementById("addProductForm").reset();
+
+    window.location.reload();
+
+  } catch (error) {
+    console.error(error);
+    alert("فشلت إضافة المنتج. راجع صلاحيات Firebase.");
+  }
+});
   </script>
 
 </body>

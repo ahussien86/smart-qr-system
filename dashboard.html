@@ -147,7 +147,8 @@
 
         const restaurantRef = doc(db, "restaurants", user.uid);
         const restaurantSnap = await getDoc(restaurantRef);
-
+        console.log("Restaurant read successful:", restaurantSnap.exists());
+        
         if (!restaurantSnap.exists()) {
           throw new Error("Restaurant not found");
         }
@@ -174,7 +175,7 @@
         );
 
         const productsSnap = await getDocs(productsQuery);
-
+console.log("Products read successful:", productsSnap.size);
         document.getElementById("productCount").textContent =
           productsSnap.size;
 

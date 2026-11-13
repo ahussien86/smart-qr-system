@@ -154,7 +154,9 @@
         }
 
         const restaurant = restaurantSnap.data();
-
+console.log("Logged UID:", user.uid);
+console.log("Restaurant Owner:", restaurant.ownerId);
+console.log("Restaurant Active:", restaurant.active);
         if (restaurant.ownerId !== user.uid || restaurant.active !== true) {
           throw new Error("Access denied");
         }

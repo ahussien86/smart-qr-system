@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMART QR | Dashboard</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #101114;
+      color: white;
+      padding: 25px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      color: #f5a623;
+    }
+
+    button {
+      padding: 11px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #f5a623;
+      color: #171717;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .stats {
+      background: #1b1c22;
+      border: 1px solid #34353e;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: #1b1c22;
+      border: 1px solid #34353e;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .card h3 {
+      color: #f5a623;
+    }
+
+    .muted {
+      color: #aaa;
+    }
+
+    #message {
+      margin: 20px 0;
+      color: #f5a623;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div>
+      <h1>SMART QR</h1>
+      <p class="muted">لوحة تحكم المطعم</p>
+    </div>
+
+    <button id="logoutBtn">تسجيل الخروج</button>
+  </header>
+
+  <div class="stats">
+    <h2 id="restaurantName">جاري تحميل المطعم...</h2>
+    <p>إجمالي المنتجات: <strong id="productCount">0</strong></p>
+  </div>
+
+  <div id="message">جاري تحميل البيانات...</div>
+
+  <div class="products" id="products"></div>
+
+  <script type="module">
+
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from
+      "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      getDocs,
+      query,
+      where
+    } from
+      "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAH_JFFNU9qDKihPdOyNtLZ_ecMwWSMOIM",
+      authDomain: "smart-qr-system-5a587.firebaseapp.com",
+      projectId: "smart-qr-system-5a587",
+      storageBucket: "smart-qr-system-5a587.firebasestorage.app",
+      messagingSenderId: "879059590632",
+      appId: "1:879059590632:web:38ce57f677cb6fc1b5185d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const message = document.getElementById("message");
+    const productsDiv = document.getElementById("products");
+
+    onAuthStateChanged(auth, async (user) => {
+
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      try {
+
+        const restaurantRef = doc(db, "restaurants", user.uid);
+        const restaurantSnap = await getDoc(restaurantRef);
+
+        if (!restaurantSnap.exists()) {
+          throw new Error("Restaurant not found");
+        }
+
+        const restaurant = restaurantSnap.data();
+
+        if (restaurant.ownerId !== user.uid || restaurant.active !== true) {
+          throw new Error("Access denied");
+        }
+
+        document.getElementById("restaurantName").textContent =
+          restaurant.name;
+
+        const productsRef = collection(
+          db,
+          "restaurants",
+          user.uid,
+          "products"
+        );
+
+        const productsQuery = query(
+          productsRef,
+          where("available", "==", true)
+        );
+
+        const productsSnap = await getDocs(productsQuery);
+
+        document.getElementById("productCount").textContent =
+          productsSnap.size;
+
+        productsDiv.innerHTML = "";
+
+        if (productsSnap.empty) {
+          message.textContent = "لا توجد منتجات متاحة حتى الآن.";
+        } else {
+          message.textContent = "";
+
+          productsSnap.forEach((productDoc) => {
+            const product = productDoc.data();
+
+            const card = document.createElement("div");
+            card.className = "card";
+
+            const name = document.createElement("h3");
+            name.textContent = product.name;
+
+            const category = document.createElement("p");
+            category.textContent = "القسم: " + product.category;
+
+            const description = document.createElement("p");
+            description.textContent = product.description;
+
+            const price = document.createElement("p");
+            price.textContent = "السعر: " + product.price + " جنيه";
+
+            const image = document.createElement("p");
+            image.textContent = product.image;
+
+            card.append(name, category, description, price, image);
+            productsDiv.appendChild(card);
+          });
+        }
+
+      } catch (error) {
+        console.error(error);
+        message.textContent =
+          "حصلت مشكلة في تحميل البيانات. راجع إعدادات Firebase.";
+      }
+
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "index.html";
+    });
+
+  </script>
+
+</body>
+</html>

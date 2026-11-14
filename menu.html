@@ -384,8 +384,8 @@ const totalElement = document.getElementById("total");
 
 // بيانات المطعم من الرابط
 const params = new URLSearchParams(window.location.search);
-const restaurantId = params.get("restaurant");
-
+const restaurantId =
+  params.get("id") || params.get("restaurant");
 
 // السلة
 const cart = [];

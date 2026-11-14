@@ -135,16 +135,12 @@
       e.preventDefault();
 
       const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+const password = document.getElementById("password").value;
 
-      message.textContent = "جاري تسجيل الدخول...";
+message.textContent = "جاري تسجيل الدخول...";
 
-     try {
-  const result = await signInWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
+try {
+  await signInWithEmailAndPassword(auth, email, password);
 
   message.textContent = "تم تسجيل الدخول بنجاح! جاري فتح لوحة التحكم...";
 
@@ -154,12 +150,14 @@
   message.textContent = "تعذر تسجيل الدخول. راجع البريد وكلمة المرور.";
   console.error(error);
 }
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        message.textContent =
-          "أنت مسجل الدخول بالفعل. UID: " + user.uid;
-      }
-    });
+
+});
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    message.textContent = "أنت مسجل الدخول بالفعل. UID: " + user.uid;
+  }
+});
 </script>
 
 </body>

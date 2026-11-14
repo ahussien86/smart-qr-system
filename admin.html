@@ -226,6 +226,7 @@ td {
   }
 }
 </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 
 <body>
@@ -314,11 +315,13 @@ td {
           <th>صاحب المطعم</th>
           <th>البريد الإلكتروني</th>
           <th>الحالة</th>
+          <th>لينك المنيو</th>
+          <th>QR Code</th>
         </tr>
       </thead>
       <tbody id="restaurantsTable">
         <tr>
-          <td colspan="4" class="empty">جاري تحميل المطاعم...</td>
+          <td colspan="6" class="empty">جاري تحميل المطاعم...</td>
         </tr>
       </tbody>
     </table>
@@ -405,7 +408,35 @@ onAuthStateChanged(auth, async (user) => {
 
 
 // تحميل المطاعم
-async function loadRestaurants() {
+function downloadRestaurantQR(url, restaurantName) {
+  const box = document.createElement("div");
+
+  new QRCode(box, {
+    text: url,
+    width: 500,
+    height: 500,
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  setTimeout(() => {
+    const canvas = box.querySelector("canvas");
+
+    if (!canvas) {
+      alert("تعذر إنشاء QR Code");
+      return;
+    }
+
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+
+    const safeName = (restaurantName || "restaurant")
+      .replace(/[^\w\u0600-\u06FF-]/g, "_");
+
+    link.download = safeName + "-QR.png";
+    link.click();
+  }, 300);
+}
+  async function loadRestaurants() {
 
   try {
     const snapshot = await getDocs(collection(db, "restaurants"));
@@ -438,14 +469,55 @@ async function loadRestaurants() {
         ? '<span class="badge">نشط</span>'
         : "متوقف";
 
-      row.append(name, owner, email, status);
-      table.appendChild(row);
+     // إنشاء رابط المنيو الخاص بالمطعم
+const menuUrl = new URL("menu.html", window.location.href);
+menuUrl.searchParams.set("id", item.id);
+
+// زر نسخ الرابط
+const linkCell = document.createElement("td");
+const copyBtn = document.createElement("button");
+
+copyBtn.textContent = "نسخ اللينك";
+copyBtn.style.background = "#d4ad65";
+copyBtn.style.color = "#171717";
+
+copyBtn.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(menuUrl.href);
+    copyBtn.textContent = "تم النسخ ✓";
+
+    setTimeout(() => {
+      copyBtn.textContent = "نسخ اللينك";
+    }, 2000);
+  } catch (error) {
+    alert("تعذر نسخ الرابط: " + menuUrl.href);
+  }
+});
+
+linkCell.appendChild(copyBtn);
+
+// زر تحميل QR
+const qrCell = document.createElement("td");
+const qrBtn = document.createElement("button");
+
+qrBtn.textContent = "تحميل QR";
+qrBtn.style.background = "#252a35";
+qrBtn.style.color = "#d4ad65";
+
+qrBtn.addEventListener("click", () => {
+  downloadRestaurantQR(menuUrl.href, restaurant.name);
+});
+
+qrCell.appendChild(qrBtn);
+
+row.append(name, owner, email, status, linkCell, qrCell);
+table.appendChild(row);
 
     });
 
     if (snapshot.empty) {
       table.innerHTML =
-        '<tr><td colspan="4" class="empty">لا توجد مطاعم حتى الآن.</td></tr>';
+        '<tr><td colspan="6" class="empty">لا توجد مطاعم حتى الآن.</td></tr>';
     }
 
     document.getElementById("totalRestaurants").textContent =
@@ -458,7 +530,7 @@ async function loadRestaurants() {
     console.error(error);
 
     document.getElementById("restaurantsTable").innerHTML =
-      '<tr><td colspan="4">تعذر تحميل المطاعم. قد تحتاج Firestore Rules إلى تحديث.</td></tr>';
+      '<tr><td colspan="6">تعذر تحميل المطاعم. قد تحتاج Firestore Rules إلى تحديث.</td></tr>';
   }
 
 }

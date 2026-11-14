@@ -1,281 +1,786 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منيو المطعم</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-  :root {
-    --primary-color: #c9a45c;
-    --background-color: #111111;
-    --card-color: #222222;
-    --text-color: #ffffff;
+<title>Smart QR | المنيو الإلكتروني</title>
+
+<style>
+:root {
+  --ink: #251f1b;
+  --cream: #faf6ef;
+  --accent: #d97736;
+  --muted: #786f68;
+  --line: #eadfd3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: Tahoma, Arial, sans-serif;
+}
+
+.wrap {
+  max-width: 850px;
+  margin: auto;
+  padding: 18px;
+}
+
+.hero {
+  background: linear-gradient(125deg, #211d1a, #493024);
+  color: white;
+  border-radius: 24px;
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+.brand {
+  font-size: 38px;
+  font-weight: 900;
+  position: relative;
+  z-index: 1;
+}
+
+.tag {
+  color: #ead7c5;
+  margin-top: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero .burger {
+  position: absolute;
+  left: 22px;
+  top: 22px;
+  font-size: 72px;
+  opacity: .95;
+}
+
+#restaurantLogo {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: white;
+  padding: 5px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+  color: #f0dfcf;
+  font-size: 13px;
+  position: relative;
+  z-index: 1;
+}
+
+h2 {
+  font-size: 22px;
+  margin: 26px 0 5px;
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.filters {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  padding: 4px 0 14px;
+}
+
+.filter {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 99px;
+  padding: 10px 16px;
+  white-space: nowrap;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.filter.active {
+  background: var(--ink);
+  color: white;
+  border-color: var(--ink);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.pic {
+  width: 76px;
+  height: 76px;
+  border-radius: 14px;
+  background: #f5e8d8;
+  display: grid;
+  place-items: center;
+  font-size: 38px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 800;
+}
+
+.desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 5px 0;
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.price {
+  font-weight: 900;
+  color: var(--accent);
+}
+
+.add {
+  border: 0;
+  background: var(--accent);
+  color: white;
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cart {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 17px;
+  margin-top: 24px;
+}
+
+.cartrow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid #f1e9e1;
+  font-size: 14px;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 900;
+  font-size: 18px;
+  padding-top: 14px;
+}
+
+.clear {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 14px;
+  padding: 12px 0;
+}
+
+.footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 24px 0;
+}
+
+#message {
+  text-align: center;
+  margin-top: 20px;
+  color: var(--muted);
+}
+
+@media(max-width:480px) {
+  .hero {
+    padding: 24px 18px;
   }
 
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    padding: 20px;
-    background: var(--background-color);
-    color: var(--text-color);
-    font-family: Arial, sans-serif;
-  }
-
-  header {
-    text-align: center;
-    padding: 25px 10px;
-    border-bottom: 2px solid var(--primary-color);
-    margin-bottom: 25px;
-  }
-
-  h1 {
-    color: var(--primary-color);
-  }
-
-  #products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 20px;
-    max-width: 1000px;
-    margin: auto;
-  }
-
-  .card {
-    background: var(--card-color);
-    border: 1px solid var(--primary-color);
-    border-radius: 12px;
-    padding: 15px;
-    overflow: hidden;
-  }
-
-  .card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-
-  .card h3 {
-    color: var(--primary-color);
-  }
-
-  .price {
-    color: var(--primary-color);
-    font-weight: bold;
-    font-size: 19px;
-  }
-
-  #message {
-    text-align: center;
-    margin-top: 30px;
-  }
-
-  #menuHeader {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 50px 20px;
-    border-radius: 15px;
-    margin-bottom: 25px;
-  }
-
-  #restaurantLogo {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-    border-radius: 50%;
-    margin-bottom: 15px;
-    background: white;
-    padding: 5px;
-  }
-
-  #restaurantName {
+  .brand {
     font-size: 32px;
   }
+
+  .hero .burger {
+    font-size: 56px;
+    left: 14px;
+    top: 25px;
+  }
+
+  .meta {
+    gap: 10px;
+  }
+}
 </style>
 </head>
 
 <body>
 
-  <header id="menuHeader">
+<main class="wrap">
 
-    <img
-      id="restaurantLogo"
-      src=""
-      alt="شعار المطعم"
-      style="display:none;"
-    >
+  <header class="hero" id="menuHeader">
 
-    <h1 id="restaurantName">جاري تحميل المنيو...</h1>
+    <img id="restaurantLogo"
+         src=""
+         alt="شعار المطعم"
+         style="display:none;">
 
-    <p>اكتشف قائمة منتجاتنا</p>
+    <div class="brand" id="restaurantName">
+      جاري تحميل المنيو...
+    </div>
+
+    <div class="tag">
+      اكتشف قائمة منتجاتنا 🍽️
+    </div>
+
+    <div class="burger">🍔</div>
+
+    <div class="meta">
+      <span>🍴 المنيو الإلكتروني</span>
+      <span>✨ منتجاتنا المميزة</span>
+    </div>
 
   </header>
 
-  <main id="products"></main>
+  <h2 id="menuTitle">المنيو</h2>
 
-  <p id="message"></p>
+  <div class="sub">
+    اختار اللي نفسك فيه، واضغط «أضف» لتجربة الطلب.
+  </div>
 
-  <script type="module">
+  <nav class="filters" id="filters"></nav>
 
-    import { initializeApp }
-      from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+  <section class="grid" id="menu"></section>
 
-    import {
-      getFirestore,
-      doc,
-      getDoc,
-      collection,
-      getDocs,
-      query,
-      where
-    } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+  <p id="message">جاري تحميل المنتجات...</p>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAH_JFFNU9qDKihPdOyNtL_zEcMwWSMOIM",
-      authDomain: "smart-qr-system-5a587.firebaseapp.com",
-      projectId: "smart-qr-system-5a587",
-      storageBucket: "smart-qr-system-5a587.firebasestorage.app",
-      messagingSenderId: "879059590632",
-      appId: "1:879059590632:web:38ce57f677cb6fc1b5185d"
+  <section class="cart">
+
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong>🛒 طلبك التجريبي</strong>
+      <button class="clear" id="clear">مسح السلة</button>
+    </div>
+
+    <div id="cart-items" class="empty">
+      السلة فاضية لسه.
+    </div>
+
+    <div class="total">
+      <span>الإجمالي</span>
+      <span id="total">0 ج.م</span>
+    </div>
+
+    <p class="note" id="cartMessage">
+      دي نسخة عرض تجريبية. الطلبات لا تُرسل للمطعم فعلياً.
+    </p>
+
+  </section>
+
+  <footer class="footer">
+    Smart QR · Digital Menu
+  </footer>
+
+</main>
+
+
+<script type="module">
+
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  query,
+  where
+} from
+"https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAH_JFFNU9qDKihPdOyNtL_zEcMwWSMOIM",
+  authDomain: "smart-qr-system-5a587.firebaseapp.com",
+  projectId: "smart-qr-system-5a587",
+  storageBucket: "smart-qr-system-5a587.firebasestorage.app",
+  messagingSenderId: "879059590632",
+  appId: "1:879059590632:web:38ce57f677cb6fc1b5185d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+// عناصر الصفحة
+const menuSection = document.getElementById("menu");
+const filtersSection = document.getElementById("filters");
+const message = document.getElementById("message");
+
+const cartItems = document.getElementById("cart-items");
+const totalElement = document.getElementById("total");
+
+
+// بيانات المطعم من الرابط
+const params = new URLSearchParams(window.location.search);
+const restaurantId = params.get("restaurant");
+
+
+// السلة
+const cart = [];
+
+
+// عرض السلة
+function renderCart() {
+
+  if (cart.length === 0) {
+    cartItems.className = "empty";
+    cartItems.textContent = "السلة فاضية لسه.";
+  } else {
+
+    cartItems.className = "";
+    cartItems.innerHTML = "";
+
+    cart.forEach((item, index) => {
+
+      const row = document.createElement("div");
+      row.className = "cartrow";
+
+      const name = document.createElement("span");
+      name.textContent = `${item.name} × ${item.qty}`;
+
+      const details = document.createElement("span");
+
+      details.append(
+        document.createTextNode(
+          `${item.price * item.qty} ج.م `
+        )
+      );
+
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "clear";
+      deleteButton.textContent = "✕";
+
+      deleteButton.onclick = () => {
+        cart.splice(index, 1);
+        renderCart();
+      };
+
+      details.appendChild(deleteButton);
+      row.append(name, details);
+
+      cartItems.appendChild(row);
+
+    });
+
+  }
+
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.qty,
+    0
+  );
+
+  totalElement.textContent = total + " ج.م";
+
+}
+
+
+// إضافة منتج للسلة
+function addToCart(product) {
+
+  const existing = cart.find(
+    item => item.id === product.id
+  );
+
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      qty: 1
+    });
+  }
+
+  renderCart();
+
+  document.getElementById("cartMessage").textContent =
+    "تمت إضافة المنتج للسلة التجريبية.";
+
+}
+
+
+// مسح السلة
+document.getElementById("clear").addEventListener("click", () => {
+
+  cart.length = 0;
+  renderCart();
+
+  document.getElementById("cartMessage").textContent =
+    "تم مسح السلة.";
+
+});
+
+
+// إنشاء كارت المنتج
+function createProductCard(product, id) {
+
+  const card = document.createElement("article");
+  card.className = "card";
+
+  const pic = document.createElement("div");
+  pic.className = "pic";
+
+  if (product.image) {
+
+    const image = document.createElement("img");
+    image.src = product.image;
+    image.alt = product.name || "صورة المنتج";
+
+    pic.appendChild(image);
+
+    image.onerror = () => {
+      pic.textContent = "🍽️";
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  } else {
 
-    const restaurantId =
-      new URLSearchParams(window.location.search).get("restaurant");
+    pic.textContent = "🍽️";
 
-    const productsContainer = document.getElementById("products");
-    const message = document.getElementById("message");
+  }
 
-    async function loadMenu() {
+  const info = document.createElement("div");
+  info.className = "info";
 
-      if (!restaurantId) {
-        message.textContent = "رابط المنيو غير صحيح";
-        return;
-      }
+  const name = document.createElement("div");
+  name.className = "name";
+  name.textContent = product.name || "";
 
-      try {
+  const description = document.createElement("div");
+  description.className = "desc";
+  description.textContent = product.description || "";
 
-        const restaurantRef = doc(db, "restaurants", restaurantId);
-        const restaurantSnap = await getDoc(restaurantRef);
+  const bottom = document.createElement("div");
+  bottom.className = "bottom";
 
-        if (!restaurantSnap.exists() || restaurantSnap.data().active !== true) {
-          message.textContent = "هذا المطعم غير متاح حالياً";
-          return;
-        }
+  const price = document.createElement("span");
+  price.className = "price";
+  price.textContent = product.price + " ج.م";
 
-        // بيانات المطعم وإعدادات التصميم
-const restaurant = restaurantSnap.data();
-const design = restaurant.menuDesign || {};
+  const button = document.createElement("button");
+  button.className = "add";
+  button.textContent = "+ أضف";
 
-// اسم المطعم
-document.getElementById("restaurantName").textContent =
-  restaurant.name || "مطعمنا";
+  button.addEventListener("click", () => {
 
-// اللون الأساسي
-const primaryColor = design.primaryColor || "#c9a45c";
-// تطبيق الألوان على التصميم بالكامل
-document.documentElement.style.setProperty(
-  "--primary-color",
-  primaryColor
-);
+    addToCart({
+      id: id,
+      name: product.name,
+      price: Number(product.price)
+    });
 
-document.documentElement.style.setProperty(
-  "--background-color",
-  design.backgroundColor || "#111111"
-);
-        
-// لون الخلفية
-document.body.style.backgroundColor =
-  design.backgroundColor || "#111111";
+  });
 
-// تطبيق اللون على العنوان
-document.getElementById("restaurantName").style.color =
-  primaryColor;
+  bottom.append(price, button);
 
-// اللوجو
-const logo = document.getElementById("restaurantLogo");
+  info.append(name, description, bottom);
 
-if (design.logo) {
-  logo.src = design.logo;
-  logo.style.display = "inline-block";
+  card.append(pic, info);
+
+  return card;
+
 }
 
-// صورة الغلاف
-const header = document.getElementById("menuHeader");
 
-if (design.coverImage) {
-  header.style.backgroundImage =
-    `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url("${design.coverImage}")`;
+// إنشاء الفلاتر حسب الأقسام الموجودة
+function createFilters(products) {
+
+  filtersSection.innerHTML = "";
+
+  const allButton = document.createElement("button");
+
+  allButton.className = "filter active";
+  allButton.textContent = "الكل";
+  allButton.dataset.filter = "all";
+
+  filtersSection.appendChild(allButton);
+
+  const categories = [
+    ...new Set(
+      products
+        .map(product => product.category)
+        .filter(category => category)
+    )
+  ];
+
+  categories.forEach(category => {
+
+    const button = document.createElement("button");
+
+    button.className = "filter";
+    button.textContent = category;
+    button.dataset.filter = category;
+
+    filtersSection.appendChild(button);
+
+  });
+
+
+  filtersSection.addEventListener("click", (event) => {
+
+    const button = event.target.closest(".filter");
+
+    if (!button) return;
+
+    filtersSection.querySelectorAll(".filter").forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
+
+    const selected = button.dataset.filter;
+
+    menuSection.querySelectorAll(".card").forEach(card => {
+
+      card.hidden =
+        selected !== "all" &&
+        card.dataset.category !== selected;
+
+    });
+
+  });
+
 }
 
-// لون إطار الهيدر
-header.style.borderColor = primaryColor;
 
-        const productsRef =
-          collection(db, "restaurants", restaurantId, "products");
+// تحميل المنيو
+async function loadMenu() {
 
-        const productsQuery = query(
-          productsRef,
-          where("available", "==", true)
-        );
+  if (!restaurantId) {
 
-        const productsSnap = await getDocs(productsQuery);
+    message.textContent = "رابط المنيو غير صحيح.";
+    return;
 
-        if (productsSnap.empty) {
-          message.textContent = "لا توجد منتجات متاحة حالياً";
-          return;
-        }
+  }
 
-        productsSnap.forEach((productDoc) => {
+  try {
 
-          const product = productDoc.data();
+    // بيانات المطعم
+    const restaurantRef = doc(
+      db,
+      "restaurants",
+      restaurantId
+    );
 
-          const card = document.createElement("div");
-          card.className = "card";
+    const restaurantSnap = await getDoc(restaurantRef);
 
-          if (product.image) {
-            const image = document.createElement("img");
-            image.src = product.image;
-            image.alt = product.name || "صورة المنتج";
-            card.appendChild(image);
-          }
+    if (
+      !restaurantSnap.exists() ||
+      restaurantSnap.data().active !== true
+    ) {
 
-          const name = document.createElement("h3");
-          name.textContent = product.name || "";
-          name.style.color = primaryColor;
+      message.textContent =
+        "هذا المطعم غير متاح حالياً.";
 
-          const category = document.createElement("p");
-          category.textContent = product.category || "";
+      return;
 
-          const description = document.createElement("p");
-          description.textContent = product.description || "";
-
-          const price = document.createElement("p");
-          price.className = "price";
-          price.style.color = primaryColor;
-          price.textContent = `${product.price} جنيه`;
-
-          card.append(name, category, description, price);
-          productsContainer.appendChild(card);
-
-        });
-
-      } catch (error) {
-        console.error(error);
-        message.textContent = "حصل خطأ أثناء تحميل المنيو";
-      }
     }
 
-    loadMenu();
+    const restaurant = restaurantSnap.data();
+    const design = restaurant.menuDesign || {};
 
-  </script>
+
+    // اسم المطعم
+    document.getElementById("restaurantName").textContent =
+      restaurant.name || "مطعمنا";
+
+    document.getElementById("menuTitle").textContent =
+      "منيو " + (restaurant.name || "");
+
+
+    // اللون الأساسي
+    const primaryColor =
+      design.primaryColor || "#d97736";
+
+    document.documentElement.style.setProperty(
+      "--accent",
+      primaryColor
+    );
+
+
+    // لون الخلفية
+    const backgroundColor =
+      design.backgroundColor || "#faf6ef";
+
+    document.documentElement.style.setProperty(
+      "--cream",
+      backgroundColor
+    );
+
+    document.body.style.backgroundColor =
+      backgroundColor;
+
+
+    // اللوجو
+    const logo = document.getElementById("restaurantLogo");
+
+    if (design.logo) {
+
+      logo.src = design.logo;
+      logo.style.display = "block";
+
+    }
+
+
+    // صورة الغلاف
+    const header = document.getElementById("menuHeader");
+
+    if (design.coverImage) {
+
+      header.style.backgroundImage =
+        `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url("${design.coverImage}")`;
+
+    }
+
+
+    // تحميل المنتجات المتاحة فقط
+    const productsRef = collection(
+      db,
+      "restaurants",
+      restaurantId,
+      "products"
+    );
+
+    const productsQuery = query(
+      productsRef,
+      where("available", "==", true)
+    );
+
+    const productsSnap = await getDocs(productsQuery);
+
+
+    if (productsSnap.empty) {
+
+      message.textContent =
+        "لا توجد منتجات متاحة حالياً.";
+
+      return;
+
+    }
+
+
+    const products = [];
+
+    productsSnap.forEach(productDoc => {
+
+      const product = productDoc.data();
+
+      products.push({
+        id: productDoc.id,
+        ...product
+      });
+
+    });
+
+
+    // إنشاء الفلاتر
+    createFilters(products);
+
+
+    // عرض المنتجات
+    menuSection.innerHTML = "";
+
+    products.forEach(product => {
+
+      const card = createProductCard(
+        product,
+        product.id
+      );
+
+      card.dataset.category = product.category || "";
+
+      menuSection.appendChild(card);
+
+    });
+
+
+    message.textContent = "";
+
+  } catch (error) {
+
+    console.error("Menu loading error:", error);
+
+    message.textContent =
+      "تعذر تحميل المنيو. حاول تحديث الصفحة.";
+
+  }
+
+}
+
+
+loadMenu();
+
+</script>
 
 </body>
 </html>

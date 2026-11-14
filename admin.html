@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart QR - Admin</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Tahoma, Arial;
+      background: #111;
+      color: white;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #c9a45c;
+    }
+
+    .card {
+      background: #222;
+      padding: 25px;
+      border-radius: 15px;
+      margin-top: 25px;
+      border: 1px solid #c9a45c;
+    }
+
+    button {
+      background: #c9a45c;
+      color: #111;
+      border: 0;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #message {
+      color: #c9a45c;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Smart QR | لوحة المدير</h1>
+
+  <p id="message">جاري التحقق من صلاحياتك...</p>
+
+  <div id="adminPanel" style="display:none;">
+
+    <div class="card">
+      <h2>مرحباً بك في لوحة الإدارة 👋</h2>
+      <p>أنت مسجل الدخول بصلاحية المدير العام.</p>
+      <button id="addRestaurant">إضافة مطعم جديد</button>
+    </div>
+
+    <div class="card">
+      <h2>إدارة المطاعم</h2>
+      <p>قريباً: عرض المطاعم المسجلة وإدارتها.</p>
+    </div>
+
+    <button id="logout">تسجيل الخروج</button>
+
+  </div>
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAH_JFFNU9qDKihPdOyNtL_zEcMwWSMOIM",
+  authDomain: "smart-qr-system-5a587.firebaseapp.com",
+  projectId: "smart-qr-system-5a587",
+  storageBucket: "smart-qr-system-5a587.firebasestorage.app",
+  messagingSenderId: "879059590632",
+  appId: "1:879059590632:web:38ce57f677cb6fc1b5185d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const message = document.getElementById("message");
+const adminPanel = document.getElementById("adminPanel");
+
+onAuthStateChanged(auth, async (user) => {
+
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  try {
+
+    const adminRef = doc(db, "admins", user.uid);
+    const adminSnap = await getDoc(adminRef);
+
+    if (!adminSnap.exists() || adminSnap.data().role !== "admin") {
+      message.textContent = "ليس لديك صلاحية دخول لوحة المدير.";
+      await signOut(auth);
+      return;
+    }
+
+    message.textContent = "تم التحقق من صلاحيات المدير بنجاح.";
+    adminPanel.style.display = "block";
+
+  } catch (error) {
+    console.error(error);
+    message.textContent = "حدث خطأ أثناء التحقق من الصلاحيات.";
+  }
+
+});
+
+document.getElementById("logout").addEventListener("click", async () => {
+  await signOut(auth);
+  window.location.href = "index.html";
+});
+
+document.getElementById("addRestaurant").addEventListener("click", () => {
+  alert("هنجهز نظام إضافة المطاعم في الخطوة القادمة.");
+});
+
+</script>
+
+</body>
+</html>

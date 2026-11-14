@@ -269,7 +269,58 @@ console.log("Restaurant Active:", restaurant.active);
 
         document.getElementById("restaurantName").textContent =
           restaurant.name;
+// تحميل إعدادات التصميم
+const design = restaurant.menuDesign || {};
 
+document.getElementById("designName").value =
+  restaurant.name || "";
+
+document.getElementById("designLogo").value =
+  design.logo || "";
+
+document.getElementById("primaryColor").value =
+  design.primaryColor || "#c9a45c";
+
+document.getElementById("backgroundColor").value =
+  design.backgroundColor || "#111111";
+
+document.getElementById("coverImage").value =
+  design.coverImage || "";
+
+
+// حفظ إعدادات التصميم
+document.getElementById("designForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const newName = document.getElementById("designName").value.trim();
+
+  if (!newName) {
+    alert("اكتب اسم المطعم");
+    return;
+  }
+
+  const menuDesign = {
+    logo: document.getElementById("designLogo").value.trim(),
+    primaryColor: document.getElementById("primaryColor").value,
+    backgroundColor: document.getElementById("backgroundColor").value,
+    coverImage: document.getElementById("coverImage").value.trim()
+  };
+
+  try {
+    await updateDoc(restaurantRef, {
+      name: newName,
+      menuDesign: menuDesign
+    });
+
+    document.getElementById("restaurantName").textContent = newName;
+
+    alert("تم حفظ تصميم المطعم بنجاح!");
+
+  } catch (error) {
+    console.error(error);
+    alert("حدث خطأ أثناء حفظ التصميم");
+  }
+});
         const productsRef = collection(
           db,
           "restaurants",

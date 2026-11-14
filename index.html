@@ -150,6 +150,9 @@ async function redirectUser(user) {
     const adminRef = doc(db, "admins", user.uid);
     const adminSnap = await getDoc(adminRef);
 
+    console.log("Admin UID:", user.uid);
+console.log("Admin Data:", adminSnap.exists() ? adminSnap.data() : "NOT FOUND");
+    
     if (
       adminSnap.exists() &&
       adminSnap.data().role === "admin"

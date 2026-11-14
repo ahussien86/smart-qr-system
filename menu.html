@@ -64,17 +64,50 @@
       text-align: center;
       margin-top: 30px;
     }
+  #menuHeader {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 50px 20px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+}
+
+#restaurantLogo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  background: white;
+  padding: 5px;
+}
+
+#restaurantName {
+  font-size: 32px;
+}
   </style>
 </head>
 
 <body>
 
-  <header>
+  <header id="menuHeader">
+
+    <img
+      id="restaurantLogo"
+      src=""
+      alt="شعار المطعم"
+      style="display:none;"
+    >
+
     <h1 id="restaurantName">جاري تحميل المنيو...</h1>
+
     <p>اكتشف قائمة منتجاتنا</p>
+
   </header>
 
   <main id="products"></main>
+
   <p id="message"></p>
 
   <script type="module">

@@ -180,7 +180,17 @@ document.getElementById("restaurantName").textContent =
 
 // اللون الأساسي
 const primaryColor = design.primaryColor || "#c9a45c";
+// تطبيق الألوان على التصميم بالكامل
+document.documentElement.style.setProperty(
+  "--primary-color",
+  primaryColor
+);
 
+document.documentElement.style.setProperty(
+  "--background-color",
+  design.backgroundColor || "#111111"
+);
+        
 // لون الخلفية
 document.body.style.backgroundColor =
   design.backgroundColor || "#111111";

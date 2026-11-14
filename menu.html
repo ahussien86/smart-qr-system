@@ -160,8 +160,43 @@
           return;
         }
 
-        document.getElementById("restaurantName").textContent =
-          restaurantSnap.data().name;
+        // بيانات المطعم وإعدادات التصميم
+const restaurant = restaurantSnap.data();
+const design = restaurant.menuDesign || {};
+
+// اسم المطعم
+document.getElementById("restaurantName").textContent =
+  restaurant.name || "مطعمنا";
+
+// اللون الأساسي
+const primaryColor = design.primaryColor || "#c9a45c";
+
+// لون الخلفية
+document.body.style.backgroundColor =
+  design.backgroundColor || "#111111";
+
+// تطبيق اللون على العنوان
+document.getElementById("restaurantName").style.color =
+  primaryColor;
+
+// اللوجو
+const logo = document.getElementById("restaurantLogo");
+
+if (design.logo) {
+  logo.src = design.logo;
+  logo.style.display = "inline-block";
+}
+
+// صورة الغلاف
+const header = document.getElementById("menuHeader");
+
+if (design.coverImage) {
+  header.style.backgroundImage =
+    `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url("${design.coverImage}")`;
+}
+
+// لون إطار الهيدر
+header.style.borderColor = primaryColor;
 
         const productsRef =
           collection(db, "restaurants", restaurantId, "products");
@@ -194,6 +229,7 @@
 
           const name = document.createElement("h3");
           name.textContent = product.name || "";
+          name.style.color = primaryColor;
 
           const category = document.createElement("p");
           category.textContent = product.category || "";
@@ -203,6 +239,7 @@
 
           const price = document.createElement("p");
           price.className = "price";
+          price.style.color = primaryColor;
           price.textContent = `${product.price} جنيه`;
 
           card.append(name, category, description, price);

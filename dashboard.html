@@ -304,15 +304,43 @@ console.log("Products read successful:", productsSnap.size);
       alert("فشل حذف المنتج");
     }
   };
+const toggleBtn = document.createElement("button");
 
+toggleBtn.textContent = product.available
+  ? "إخفاء المنتج 👁️"
+  : "إظهار المنتج";
+
+toggleBtn.style.margin = "5px";
+toggleBtn.style.background = product.available ? "#777" : "#27ae60";
+
+toggleBtn.onclick = async () => {
+  try {
+    await updateDoc(
+      doc(db, "restaurants", auth.currentUser.uid, "products", productId),
+      {
+        available: !product.available
+      }
+    );
+
+    alert(product.available ? "تم إخفاء المنتج" : "تم إظهار المنتج");
+
+    window.location.reload();
+
+  } catch (error) {
+    console.error(error);
+    alert("حدث خطأ أثناء تغيير حالة المنتج");
+  }
+};
+ 
   card.append(
-    image,
-    name,
-    category,
-    description,
-    price,
-    editBtn,
-    deleteBtn
+  image,
+  name,
+  category,
+  description,
+  price,
+  editBtn,
+  deleteBtn,
+  toggleBtn
   );
 
   productsDiv.appendChild(card);

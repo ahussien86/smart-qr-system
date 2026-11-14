@@ -105,60 +105,106 @@
 
   <script type="module">
 
-    import { initializeApp } from
-      "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+import { initializeApp } from
+  "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
 
-    import {
-      getAuth,
-      signInWithEmailAndPassword,
-      onAuthStateChanged,
-      signOut
-    } from
-      "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from
+  "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAH_JFFNU9qDKihPdOyNtLZ_ecMwWSMOIM",
-      authDomain: "smart-qr-system-5a587.firebaseapp.com",
-      projectId: "smart-qr-system-5a587",
-      storageBucket: "smart-qr-system-5a587.firebasestorage.app",
-      messagingSenderId: "879059590632",
-      appId: "1:879059590632:web:38ce57f677cb6fc1b5185d"
-    };
+import {
+  getFirestore,
+  doc,
+  getDoc
+} from
+  "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
 
-    const form = document.getElementById("loginForm");
-    const message = document.getElementById("message");
+const firebaseConfig = {
+  apiKey: "AIzaSyAH_JFFNU9qDKihPdOyNtL_zEcMwWSMOIM",
+  authDomain: "smart-qr-system-5a587.firebaseapp.com",
+  projectId: "smart-qr-system-5a587",
+  storageBucket: "smart-qr-system-5a587.firebasestorage.app",
+  messagingSenderId: "879059590632",
+  appId: "1:879059590632:web:38ce57f677cb6fc1b5185d"
+};
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-      const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+const form = document.getElementById("loginForm");
+const message = document.getElementById("message");
 
-message.textContent = "جاري تسجيل الدخول...";
 
-try {
-  await signInWithEmailAndPassword(auth, email, password);
+async function redirectUser(user) {
 
-  message.textContent = "تم تسجيل الدخول بنجاح! جاري فتح لوحة التحكم...";
+  message.textContent = "جاري التحقق من صلاحيات الحساب...";
 
-  window.location.href = "dashboard.html";
+  try {
 
-} catch (error) {
-  message.textContent = "تعذر تسجيل الدخول. راجع البريد وكلمة المرور.";
-  console.error(error);
+    // التحقق هل المستخدم مدير عام؟
+    const adminRef = doc(db, "admins", user.uid);
+    const adminSnap = await getDoc(adminRef);
+
+    if (
+      adminSnap.exists() &&
+      adminSnap.data().role === "admin"
+    ) {
+      message.textContent = "أهلاً بك، جاري فتح لوحة المدير...";
+      window.location.href = "admin.html";
+      return;
+    }
+
+    // لو مش مدير، يفتح لوحة المطعم
+    message.textContent = "جاري فتح لوحة المطعم...";
+    window.location.href = "dashboard.html";
+
+  } catch (error) {
+
+    console.error(error);
+    message.textContent = "حدث خطأ أثناء التحقق من صلاحيات الحساب.";
+
+  }
 }
 
-});
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    message.textContent = "أنت مسجل الدخول بالفعل. UID: " + user.uid;
+// تسجيل الدخول
+form.addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  message.textContent = "جاري تسجيل الدخول...";
+
+  try {
+
+    await signInWithEmailAndPassword(auth, email, password);
+
+  } catch (error) {
+
+    message.textContent = "تعذر تسجيل الدخول. راجع البريد وكلمة المرور.";
+    console.error(error);
+
   }
-});
-</script>
 
+});
+
+
+// التعامل مع المستخدم المسجل دخوله بالفعل
+onAuthStateChanged(auth, (user) => {
+
+  if (user) {
+    redirectUser(user);
+  }
+
+});
+
+</script>
 </body>
 </html>

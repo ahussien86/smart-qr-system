@@ -219,12 +219,8 @@ console.log("Restaurant Active:", restaurant.active);
           "products"
         );
 
-        const productsQuery = query(
-          productsRef,
-          where("available", "==", true)
-        );
-
-        const productsSnap = await getDocs(productsQuery);
+        const productsSnap = await getDocs(productsRef);
+        
 console.log("Products read successful:", productsSnap.size);
         document.getElementById("productCount").textContent =
           productsSnap.size;

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منيو المطعم</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      text-align: center;
+      padding: 25px 10px;
+      border-bottom: 1px solid #c9a45c;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      color: #c9a45c;
+    }
+
+    #products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .card {
+      background: #222;
+      border-radius: 12px;
+      padding: 15px;
+      overflow: hidden;
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .card h3 {
+      color: #c9a45c;
+    }
+
+    .price {
+      font-weight: bold;
+      font-size: 19px;
+    }
+
+    #message {
+      text-align: center;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1 id="restaurantName">جاري تحميل المنيو...</h1>
+    <p>اكتشف قائمة منتجاتنا</p>
+  </header>
+
+  <main id="products"></main>
+  <p id="message"></p>
+
+  <script type="module">
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      getDocs,
+      query,
+      where
+    } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAH_JFFNU9qDKihPdOyNtL_zEcMwWSMOIM",
+      authDomain: "smart-qr-system-5a587.firebaseapp.com",
+      projectId: "smart-qr-system-5a587",
+      storageBucket: "smart-qr-system-5a587.firebasestorage.app",
+      messagingSenderId: "879059590632",
+      appId: "1:879059590632:web:38ce57f677cb6fc1b5185d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const restaurantId =
+      new URLSearchParams(window.location.search).get("restaurant");
+
+    const productsContainer = document.getElementById("products");
+    const message = document.getElementById("message");
+
+    async function loadMenu() {
+
+      if (!restaurantId) {
+        message.textContent = "رابط المنيو غير صحيح";
+        return;
+      }
+
+      try {
+
+        const restaurantRef = doc(db, "restaurants", restaurantId);
+        const restaurantSnap = await getDoc(restaurantRef);
+
+        if (!restaurantSnap.exists() || restaurantSnap.data().active !== true) {
+          message.textContent = "هذا المطعم غير متاح حالياً";
+          return;
+        }
+
+        document.getElementById("restaurantName").textContent =
+          restaurantSnap.data().name;
+
+        const productsRef =
+          collection(db, "restaurants", restaurantId, "products");
+
+        const productsQuery = query(
+          productsRef,
+          where("available", "==", true)
+        );
+
+        const productsSnap = await getDocs(productsQuery);
+
+        if (productsSnap.empty) {
+          message.textContent = "لا توجد منتجات متاحة حالياً";
+          return;
+        }
+
+        productsSnap.forEach((productDoc) => {
+
+          const product = productDoc.data();
+
+          const card = document.createElement("div");
+          card.className = "card";
+
+          if (product.image) {
+            const image = document.createElement("img");
+            image.src = product.image;
+            image.alt = product.name || "صورة المنتج";
+            card.appendChild(image);
+          }
+
+          const name = document.createElement("h3");
+          name.textContent = product.name || "";
+
+          const category = document.createElement("p");
+          category.textContent = product.category || "";
+
+          const description = document.createElement("p");
+          description.textContent = product.description || "";
+
+          const price = document.createElement("p");
+          price.className = "price";
+          price.textContent = `${product.price} جنيه`;
+
+          card.append(name, category, description, price);
+          productsContainer.appendChild(card);
+
+        });
+
+      } catch (error) {
+        console.error(error);
+        message.textContent = "حصل خطأ أثناء تحميل المنيو";
+      }
+    }
+
+    loadMenu();
+
+  </script>
+
+</body>
+</html>

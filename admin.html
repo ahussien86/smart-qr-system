@@ -113,7 +113,10 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   try {
-
+    
+console.log("Current UID:", user.uid);
+console.log("Checking admin document...");
+    
     const adminRef = doc(db, "admins", user.uid);
     const adminSnap = await getDoc(adminRef);
 

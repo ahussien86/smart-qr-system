@@ -74,6 +74,40 @@
       margin: 20px 0;
       color: #f5a623;
     }
+.design-settings {
+  background: #222;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 25px 0;
+}
+
+.design-settings h2 {
+  color: #c9a45c;
+}
+
+.design-settings label {
+  display: block;
+  margin-top: 15px;
+}
+
+.design-settings input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: none;
+}
+
+.design-settings button {
+  margin-top: 20px;
+  padding: 12px 25px;
+  background: #c9a45c;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+    
   </style>
 </head>
 
@@ -134,6 +168,30 @@
     >
 
     <button type="submit">إضافة المنتج</button>
+
+  </form>
+</div>
+<div class="stats">
+  <h2>🎨 تخصيص تصميم المنيو</h2>
+
+  <form id="designForm">
+
+    <label>اسم المطعم</label>
+    <input type="text" id="designName" placeholder="اسم المطعم">
+
+    <label>رابط اللوجو</label>
+    <input type="url" id="designLogo" placeholder="رابط صورة اللوجو">
+
+    <label>اللون الأساسي</label>
+    <input type="color" id="primaryColor" value="#c9a45c">
+
+    <label>لون الخلفية</label>
+    <input type="color" id="backgroundColor" value="#111111">
+
+    <label>رابط صورة الغلاف</label>
+    <input type="url" id="coverImage" placeholder="رابط صورة الغلاف">
+
+    <button type="submit">حفظ التصميم</button>
 
   </form>
 </div>

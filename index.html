@@ -139,22 +139,21 @@
 
       message.textContent = "جاري تسجيل الدخول...";
 
-      try {
-        const result = await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+     try {
+  const result = await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
 
-        message.textContent =
-          "تم تسجيل الدخول بنجاح! UID: " + result.user.uid;
+  message.textContent = "تم تسجيل الدخول بنجاح! جاري فتح لوحة التحكم...";
 
-      } catch (error) {
-        message.textContent = "تعذر تسجيل الدخول. راجع البريد وكلمة المرور.";
-        console.error(error);
-      }
-    });
+  window.location.href = "dashboard.html";
 
+} catch (error) {
+  message.textContent = "تعذر تسجيل الدخول. راجع البريد وكلمة المرور.";
+  console.error(error);
+}
     onAuthStateChanged(auth, (user) => {
       if (user) {
         message.textContent =

@@ -1,95 +1,359 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart QR - Admin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMART QR | Admin Panel</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Tahoma, Arial;
-      background: #111;
-      color: white;
-      padding: 30px;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  font-family: Tahoma, Arial, sans-serif;
+}
 
-    .container {
-      max-width: 850px;
-      margin: auto;
-    }
+body {
+  margin: 0;
+  background: #101116;
+  color: #f5f5f5;
+}
 
-    h1 {
-      color: #c9a45c;
-    }
+.sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 240px;
+  height: 100vh;
+  background: #191a20;
+  border-left: 1px solid #30313a;
+  padding: 30px 20px;
+}
 
-    .card {
-      background: #222;
-      padding: 25px;
-      border-radius: 15px;
-      margin-top: 25px;
-      border: 1px solid #c9a45c;
-    }
+.logo {
+  color: #d4ad65;
+  font-size: 25px;
+  font-weight: bold;
+  margin-bottom: 45px;
+}
 
-    button {
-      background: #c9a45c;
-      color: #111;
-      border: 0;
-      padding: 12px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+.menu-item {
+  padding: 14px;
+  border-radius: 9px;
+  margin-bottom: 10px;
+  color: #ccc;
+}
 
-    #message {
-      color: #c9a45c;
-    }
-  </style>
+.menu-item.active {
+  background: #302a20;
+  color: #e4bd77;
+}
+
+.main {
+  margin-right: 240px;
+  padding: 35px;
+  max-width: 1500px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 35px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.gold {
+  color: #d4ad65;
+}
+
+.subtitle {
+  color: #999;
+  margin-top: 8px;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout {
+  background: #342323;
+  color: #ff8b8b;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.stat-card, .panel {
+  background: #1b1c23;
+  border: 1px solid #30313a;
+  border-radius: 14px;
+  padding: 23px;
+}
+
+.stat-card p {
+  color: #999;
+  margin: 0 0 15px;
+}
+
+.stat-card h2 {
+  font-size: 30px;
+  color: #d4ad65;
+  margin: 0;
+}
+
+.panel {
+  margin-bottom: 25px;
+}
+
+.panel h2 {
+  margin-top: 0;
+  color: #d4ad65;
+  font-size: 21px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.field label {
+  display: block;
+  color: #bbb;
+  margin-bottom: 8px;
+}
+
+.field input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #3b3c45;
+  border-radius: 8px;
+  background: #111218;
+  color: white;
+  outline: none;
+}
+
+.field input:focus {
+  border-color: #d4ad65;
+}
+
+.primary-btn {
+  background: #d4ad65;
+  color: #171717;
+  margin-top: 22px;
+}
+
+.primary-btn:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+#message {
+  margin-top: 15px;
+  color: #d4ad65;
+  line-height: 1.8;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px;
+}
+
+th, td {
+  padding: 15px;
+  text-align: right;
+  border-bottom: 1px solid #30313a;
+}
+
+th {
+  color: #d4ad65;
+}
+
+td {
+  color: #ddd;
+}
+
+.badge {
+  background: #183d2b;
+  color: #68d99a;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.empty {
+  color: #999;
+  padding: 20px 0;
+}
+
+@media(max-width: 750px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 18px;
+  }
+
+  .logo {
+    margin-bottom: 15px;
+  }
+
+  .main {
+    margin-right: 0;
+    padding: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1>Smart QR | لوحة المدير</h1>
+<aside class="sidebar">
+  <div class="logo">SMART QR.</div>
+  <div class="menu-item active">📊 لوحة الإدارة</div>
+  <div class="menu-item">🏪 إدارة المطاعم</div>
+  <div class="menu-item">➕ إضافة مطعم</div>
+</aside>
 
-  <p id="message">جاري التحقق من صلاحياتك...</p>
+<main class="main">
 
-  <div id="adminPanel" style="display:none;">
-
-    <div class="card">
-      <h2>مرحباً بك في لوحة الإدارة 👋</h2>
-      <p>أنت مسجل الدخول بصلاحية المدير العام.</p>
-      <button id="addRestaurant">إضافة مطعم جديد</button>
-    </div>
-
-    <div class="card">
-      <h2>إدارة المطاعم</h2>
-      <p>قريباً: عرض المطاعم المسجلة وإدارتها.</p>
-    </div>
-
-    <button id="logout">تسجيل الخروج</button>
-
+<header>
+  <div>
+    <h1>لوحة <span class="gold">المدير العام</span></h1>
+    <p class="subtitle">إدارة المطاعم وحسابات أصحابها</p>
   </div>
-</div>
+  <button class="logout" id="logout">تسجيل الخروج</button>
+</header>
+
+<section class="stats">
+  <div class="stat-card">
+    <p>إجمالي المطاعم</p>
+    <h2 id="totalRestaurants">0</h2>
+  </div>
+
+  <div class="stat-card">
+    <p>المطاعم النشطة</p>
+    <h2 id="activeRestaurants">0</h2>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>➕ إضافة مطعم جديد</h2>
+
+  <form id="restaurantForm">
+
+    <div class="form-grid">
+
+      <div class="field">
+        <label>اسم المطعم</label>
+        <input id="restaurantName" required>
+      </div>
+
+      <div class="field">
+        <label>اسم صاحب المطعم</label>
+        <input id="ownerName" required>
+      </div>
+
+      <div class="field">
+        <label>البريد الإلكتروني</label>
+        <input id="ownerEmail" type="email" required>
+      </div>
+
+      <div class="field">
+        <label>رقم الهاتف</label>
+        <input id="ownerPhone" type="tel" required>
+      </div>
+
+      <div class="field">
+        <label>كلمة المرور الأولية</label>
+        <input id="ownerPassword" type="password"
+               minlength="6" required>
+      </div>
+
+    </div>
+
+    <button class="primary-btn" id="submitBtn" type="submit">
+      إنشاء المطعم والحساب
+    </button>
+
+    <div id="message"></div>
+
+  </form>
+</section>
+
+<section class="panel">
+  <h2>🏪 المطاعم المسجلة</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>اسم المطعم</th>
+          <th>صاحب المطعم</th>
+          <th>البريد الإلكتروني</th>
+          <th>الحالة</th>
+        </tr>
+      </thead>
+      <tbody id="restaurantsTable">
+        <tr>
+          <td colspan="4" class="empty">جاري تحميل المطاعم...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
 
 <script type="module">
 
-import { initializeApp }
+import { initializeApp, deleteApp }
 from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
 
 import {
   getAuth,
   onAuthStateChanged,
-  signOut
+  signOut,
+  createUserWithEmailAndPassword,
+  deleteUser
 } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
 
 import {
   getFirestore,
   doc,
-  getDoc
+  getDoc,
+  setDoc,
+  collection,
+  getDocs,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
 
+
 const firebaseConfig = {
+  // انسخ نفس إعدادات Firebase الموجودة في index.html
+  // بدون تغيير أي حرف.
   apiKey: "AIzaSyAH_JFFNU9qDKihPdOyNtLZ_ecMwWSMOIM",
   authDomain: "smart-qr-system-5a587.firebaseapp.com",
   projectId: "smart-qr-system-5a587",
@@ -103,47 +367,219 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const message = document.getElementById("message");
-const adminPanel = document.getElementById("adminPanel");
+const form = document.getElementById("restaurantForm");
+const submitBtn = document.getElementById("submitBtn");
 
+let adminVerified = false;
+
+
+// التحقق من المدير
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
-    console.log("Admin page: No user detected");
     window.location.href = "index.html";
     return;
   }
 
   try {
-    
-console.log("Current UID:", user.uid);
-console.log("Checking admin document...");
-    
-    const adminRef = doc(db, "admins", user.uid);
-    const adminSnap = await getDoc(adminRef);
+    const adminSnap = await getDoc(doc(db, "admins", user.uid));
 
-    if (!adminSnap.exists() || adminSnap.data().role !== "admin") {
-      message.textContent = "ليس لديك صلاحية دخول لوحة المدير.";
+    if (!adminSnap.exists() ||
+        adminSnap.data().role !== "admin") {
+
+      message.textContent = "ليس لديك صلاحية المدير.";
       await signOut(auth);
+      window.location.href = "index.html";
       return;
     }
 
-    message.textContent = "تم التحقق من صلاحيات المدير بنجاح.";
-    adminPanel.style.display = "block";
+    adminVerified = true;
+    loadRestaurants();
 
   } catch (error) {
     console.error(error);
-    message.textContent = "حدث خطأ أثناء التحقق من الصلاحيات.";
+    message.textContent = "تعذر التحقق من صلاحيات المدير.";
   }
 
 });
 
+
+// تحميل المطاعم
+async function loadRestaurants() {
+
+  try {
+    const snapshot = await getDocs(collection(db, "restaurants"));
+
+    const table = document.getElementById("restaurantsTable");
+
+    table.innerHTML = "";
+
+    let activeCount = 0;
+
+    snapshot.forEach((item) => {
+
+      const restaurant = item.data();
+
+      if (restaurant.active === true) activeCount++;
+
+      const row = document.createElement("tr");
+
+      const name = document.createElement("td");
+      name.textContent = restaurant.name || "بدون اسم";
+
+      const owner = document.createElement("td");
+      owner.textContent = restaurant.ownerName || "—";
+
+      const email = document.createElement("td");
+      email.textContent = restaurant.email || "—";
+
+      const status = document.createElement("td");
+      status.innerHTML = restaurant.active === true
+        ? '<span class="badge">نشط</span>'
+        : "متوقف";
+
+      row.append(name, owner, email, status);
+      table.appendChild(row);
+
+    });
+
+    if (snapshot.empty) {
+      table.innerHTML =
+        '<tr><td colspan="4" class="empty">لا توجد مطاعم حتى الآن.</td></tr>';
+    }
+
+    document.getElementById("totalRestaurants").textContent =
+      snapshot.size;
+
+    document.getElementById("activeRestaurants").textContent =
+      activeCount;
+
+  } catch (error) {
+    console.error(error);
+
+    document.getElementById("restaurantsTable").innerHTML =
+      '<tr><td colspan="4">تعذر تحميل المطاعم. قد تحتاج Firestore Rules إلى تحديث.</td></tr>';
+  }
+
+}
+
+
+// إنشاء مطعم وحساب صاحبه
+form.addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
+  if (!adminVerified || !auth.currentUser) {
+    message.textContent = "يجب تسجيل الدخول كمدير أولاً.";
+    return;
+  }
+
+  const name = document.getElementById("restaurantName").value.trim();
+  const ownerName = document.getElementById("ownerName").value.trim();
+  const email = document.getElementById("ownerEmail").value.trim();
+  const phone = document.getElementById("ownerPhone").value.trim();
+  const password = document.getElementById("ownerPassword").value;
+
+  if (!name || !ownerName || !email || !phone || password.length < 6) {
+    message.textContent = "راجع البيانات المدخلة.";
+    return;
+  }
+
+  submitBtn.disabled = true;
+  message.textContent = "جاري إنشاء الحساب والمطعم...";
+
+  let secondaryApp;
+  let secondaryUser;
+
+  try {
+
+    // تطبيق Firebase منفصل حتى لا نخرج المدير من حسابه
+    secondaryApp = initializeApp(firebaseConfig, "RestaurantCreation");
+    const secondaryAuth = getAuth(secondaryApp);
+
+    const credential = await createUserWithEmailAndPassword(
+      secondaryAuth,
+      email,
+      password
+    );
+
+    secondaryUser = credential.user;
+
+    // إنشاء بيانات المطعم
+    await setDoc(doc(db, "restaurants", secondaryUser.uid), {
+
+      name: name,
+      ownerName: ownerName,
+      email: email,
+      phone: phone,
+
+      ownerId: secondaryUser.uid,
+      active: true,
+
+      menuDesign: {
+        logo: "",
+        primaryColor: "#c9a45c",
+        backgroundColor: "#111111",
+        coverImage: ""
+      },
+
+      createdAt: serverTimestamp()
+
+    });
+
+    await signOut(secondaryAuth);
+
+    message.textContent =
+      "تم إنشاء المطعم وحساب صاحبه بنجاح! 🎉";
+
+    form.reset();
+
+    await loadRestaurants();
+
+  } catch (error) {
+
+    console.error(error);
+
+    // محاولة حذف الحساب الجديد إذا فشل إنشاء بيانات المطعم
+    if (secondaryUser) {
+      try {
+        await deleteUser(secondaryUser);
+      } catch (cleanupError) {
+        console.error("Account cleanup failed:", cleanupError);
+      }
+    }
+
+    const errors = {
+      "auth/email-already-in-use": "البريد الإلكتروني مستخدم بالفعل.",
+      "auth/weak-password": "كلمة المرور ضعيفة.",
+      "auth/invalid-email": "البريد الإلكتروني غير صحيح.",
+      "permission-denied": "صلاحيات Firestore لا تسمح بالعملية حاليًا."
+    };
+
+    message.textContent =
+      errors[error.code] || "حدث خطأ أثناء إنشاء المطعم. راجع Console.";
+
+  } finally {
+
+    if (secondaryApp) {
+      try {
+        await deleteApp(secondaryApp);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    submitBtn.disabled = false;
+
+  }
+
+});
+
+
+// تسجيل الخروج
 document.getElementById("logout").addEventListener("click", async () => {
   await signOut(auth);
   window.location.href = "index.html";
-});
-
-document.getElementById("addRestaurant").addEventListener("click", () => {
-  alert("هنجهز نظام إضافة المطاعم في الخطوة القادمة.");
 });
 
 </script>
